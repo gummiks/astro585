@@ -10,13 +10,12 @@ function var_onepass(y::Array)
     # - This has its downsites - can lead to precision errors
     #   if the numbers in the array are large
     #
-    
 
-    #Throw an error if we have NaNs, or Infs
-    @assert isfinite(y)
     n = length(y);
     sum = zero(y[1]);
     sum2 = zero(y[1]);
+    #Throw an error if we have NaNs, or Infs
+    @assert n== length(y[isfinite(y)])
 
     #One pass
     for i in 1:n
@@ -40,11 +39,12 @@ function var_twopass(y::Array)
     #   but the end result is less prone to rounding errors.
     #
 
-    #Throw an error if we have NaNs, or Infs
-    @assert isfinite(y)
     n = length(y);
     sum = zero(y[1]);
     diffsum2 = zero(y[1]);
+    #Throw an error if we have NaNs, or Infs
+    @assert n == length(y[isfinite(y)])
+
     #First pass
     for i in 1:n
         sum = sum + y[i];
@@ -77,6 +77,7 @@ function var_dynamic(y::Array)
     n = length(y);
     #Strip the array y from all +-Inf, and NaNs
     if n!= length(y[isfinite(y)])
+        println("Warning! Some Inf/NaNs exist in dataset!");
         y = y[isfinite(y)]
     end
 
